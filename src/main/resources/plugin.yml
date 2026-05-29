@@ -1,0 +1,23 @@
+name: UnifiedResourcePack
+version: 1.0.0
+main: org.ellan.unifiedresourcepack.UnifiedResourcePackPlugin
+api-version: '1.21'
+author: Ellan
+softdepend:
+  - CraftEngine
+  - ModelEngine
+commands:
+  unifiedresourcepack:
+    description: Build and upload the unified CraftEngine and ModelEngine resource pack.
+    usage: /unifiedresourcepack <build|upload|refreshvelocity|reload>
+    aliases:
+      - urpack
+      - upack
+      - unifiedpack
+permissions:
+  unifiedresourcepack.admin:
+    description: Allows using UnifiedResourcePack commands.
+    default: op
+  craftengineunifiedpack.admin:
+    description: Legacy permission alias for UnifiedResourcePack commands.
+    default: op

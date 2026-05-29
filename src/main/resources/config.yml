@@ -1,0 +1,22 @@
+craftengine-pack: plugins/CraftEngine/generated/resource_pack.zip
+modelengine-pack: plugins/ModelEngine/resource pack.zip
+cache-file: plugins/CraftEngine/cache/gitlab.json
+backup-before-build: true
+backup-directory: plugins/UnifiedResourcePack/backups
+upload-command: ce upload
+upload-wait-seconds: 180
+velocity-refresh:
+  channel: craftengine_pack_gate:refresh
+  resend-online-players: true
+merge:
+  skip-modelengine-entries:
+    - pack.mcmeta
+    - pack.png
+  merge-json-entries:
+    - assets/minecraft/items/leather_horse_armor.json
+    - assets/minecraft/items/player_head.json
+    - assets/minecraft/atlases/blocks.json
+  overwrite-conflicts: false
+  repoint-modelengine-entity-textures: true
+  repoint-texture-prefix: customcrops:block/customcrops/sprinkler/
+  copy-repointed-textures: true
