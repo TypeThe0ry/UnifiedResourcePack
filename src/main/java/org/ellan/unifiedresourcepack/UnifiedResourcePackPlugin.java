@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -189,14 +189,20 @@ public final class UnifiedResourcePackPlugin extends JavaPlugin implements Comma
     private Map<String, byte[]> readZip(Path zipPath, boolean repointTextures, boolean copyRepointedTextures, String repointPrefix) throws IOException {
         Map<String, byte[]> entries = new LinkedHashMap<>();
         Map<String, byte[]> copiedTextures = new LinkedHashMap<>();
-        try (ZipInputStream zipInput = new ZipInputStream(Files.newInputStream(zipPath))) {
-            ZipEntry zipEntry;
-            while ((zipEntry = zipInput.getNextEntry()) != null) {
+        try (ZipFile zipFile = new ZipFile(zipPath.toFile())) {
+            var zipEntries = zipFile.entries();
+            while (zipEntries.hasMoreElements()) {
+                ZipEntry zipEntry = zipEntries.nextElement();
                 if (zipEntry.isDirectory()) {
                     continue;
                 }
                 String name = normalizeEntryName(zipEntry.getName());
-                byte[] bytes = readAllBytes(zipInput);
+                byte[] bytes;
+                try (InputStream zipInput = zipFile.getInputStream(zipEntry)) {
+                    bytes = readAllBytes(zipInput);
+                } catch (IOException exception) {
+                    throw new IOException("读取资源包条目失败: " + zipPath + " -> " + name + " (" + exception.getMessage() + ")", exception);
+                }
                 if (repointTextures && name.startsWith("assets/modelengine/") && name.endsWith(".json")) {
                     bytes = repointModelEngineTextureRefs(bytes, repointPrefix);
                 }
